@@ -1,0 +1,19 @@
+In the connection string, use ./SQLEXPRESS and database name CashMovements
+
+Database creation must be handled by SQL scripts
+
+SQL Server/C# monetary precision should be decimal(19,2).
+
+Use AccountId and ExternalRef for the unique, idempotency key for movements?
+
+Protect against two simultaneous submissions of the same movement
+
+If conflicting duplicate submissions be supplied to gRPC then use an appropriate gRPC error such as ALREADY_EXISTS
+
+Statements should have be ordered and provide a running balance for each movement
+
+If statement export using the gRPC server processes 50,000+ rows, do not load into memory as one collection
+
+Statement date ranges should use from inclusive and to exclusive, with an opening balance calculated before the requested range
+
+Unit tests should cover balance calculations and concurrent duplicate handling

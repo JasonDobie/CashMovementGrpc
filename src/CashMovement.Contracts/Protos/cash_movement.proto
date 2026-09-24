@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+option csharp_namespace = "CashMovement.Contracts";
+
+package cashmovement.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service CashMovementService {
+  rpc SubmitMovement (SubmitMovementRequest) returns (SubmitMovementResponse);
+  rpc GetBalance (GetBalanceRequest) returns (BalanceResponse);
+  rpc ExportStatement (ExportStatementRequest) returns (stream StatementRow);
+}
+
+message Movement {
+  string id = 1;
+  string external_ref = 2;
+  string account_id = 3;
+  string currency = 4;
+  string amount = 5;
+  google.protobuf.Timestamp occurred_at = 6;
+  string narration = 7;
+  google.protobuf.Timestamp created_at = 8;
+}
+
+message SubmitMovementRequest {
+  string external_ref = 1;
+  string account_id = 2;
+  string currency = 3;
+  string amount = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+  string narration = 6;
+}
+
+message SubmitMovementResponse {
+  enum Outcome {
+    OUTCOME_UNSPECIFIED = 0;
+    CREATED = 1;
+    DUPLICATE = 2;
+  }
+  Outcome outcome = 1;
+  Movement movement = 2;
+}
+
+message GetBalanceRequest {
+  string account_id = 1;
+}
+
+message BalanceResponse {
+  string account_id = 1;
+  string balance = 2;
+}
+
+message ExportStatementRequest {
+  string account_id = 1;
+  google.protobuf.Timestamp from_utc = 2;
+  google.protobuf.Timestamp to_utc = 3;
+}
+
+message StatementRow {
+  Movement movement = 1;
+  string running_balance = 2;
+}
